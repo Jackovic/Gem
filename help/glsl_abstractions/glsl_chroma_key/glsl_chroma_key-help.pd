@@ -1,0 +1,201 @@
+#N canvas 713 315 818 568 10;
+#X obj 8 66 cnv 15 430 140 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#X text 60 525 see also :;
+#X text 452 8 GEM abstraction;
+#X text 69 32 GLSL abstraction;
+#X text 49 12 Synopsis: [glsl_chroma_key];
+#X obj 130 525 pix_chroma_key;
+#X obj 449 66 cnv 15 320 390 empty empty empty 20 12 0 14 -228992 -66577
+0;
+#X text 453 49 Example:;
+#X obj 459 80 cnv 15 100 60 empty empty empty 20 12 0 14 -195568 -66577
+0;
+#N canvas 0 50 450 300 gemwin 0;
+#X obj 132 136 gemwin;
+#X obj 67 89 outlet;
+#X obj 67 10 inlet;
+#X obj 67 41 route create;
+#X msg 67 70 set destroy;
+#X msg 142 68 set create;
+#X msg 132 112 create \, 1;
+#X msg 198 112 destroy;
+#X connect 2 0 3 0;
+#X connect 3 0 4 0;
+#X connect 3 0 6 0;
+#X connect 3 1 5 0;
+#X connect 3 1 7 0;
+#X connect 4 0 1 0;
+#X connect 5 0 1 0;
+#X connect 6 0 0 0;
+#X connect 7 0 0 0;
+#X restore 464 119 pd gemwin;
+#X msg 464 100 destroy;
+#X text 460 79 Create window:;
+#X obj 512 221 cnv 15 160 130 empty empty empty 20 12 0 14 -24198 -66577
+0;
+#X floatatom 527 244 5 0 255 0 - - -, f 5;
+#X obj 530 229 hsl 128 12 0 1 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 0 1;
+#X msg 527 261 value \$1 \$1 \$1;
+#X floatatom 540 284 5 0 1 0 - - -, f 5;
+#X text 29 67 Description: mix 2 images based on their color;
+#X msg 540 303 range \$1;
+#X obj 514 163 gemhead;
+#X obj 613 114 bng 15 250 50 0 empty empty pix_load 20 8 0 8 -262144
+-1 -1;
+#X obj 703 114 bng 15 250 50 0 empty empty pix_load 20 8 0 8 -262144
+-1 -1;
+#N canvas 1 112 587 366 image 0;
+#X obj 77 48 inlet;
+#X obj 77 344 outlet;
+#X obj 223 55 inlet;
+#X msg 223 123 open \$1;
+#X obj 223 100 openpanel;
+#X obj 77 205 pix_image examples/data/dancer.JPG;
+#X connect 0 0 5 0;
+#X connect 2 0 4 0;
+#X connect 3 0 5 0;
+#X connect 4 0 3 0;
+#X connect 5 0 1 0;
+#X restore 578 133 pd image;
+#N canvas 1 102 587 366 image 0;
+#X obj 77 48 inlet;
+#X obj 77 344 outlet;
+#X obj 223 55 inlet;
+#X msg 223 123 open \$1;
+#X obj 223 100 openpanel;
+#X obj 77 205 pix_image examples/data/fractal.JPG;
+#X connect 0 0 5 0;
+#X connect 2 0 4 0;
+#X connect 3 0 5 0;
+#X connect 4 0 3 0;
+#X connect 5 0 1 0;
+#X restore 668 133 pd image;
+#X obj 578 197 pix_texture;
+#X obj 668 197 pix_texture;
+#X obj 587 154 loadbang;
+#X obj 578 87 gemhead 40;
+#X obj 668 87 gemhead 40;
+#X obj 451 391 pix_texture;
+#X obj 451 361 gemhead 60;
+#X obj 451 421 square 3;
+#X msg 587 176 rectangle 1;
+#X obj 677 154 loadbang;
+#X msg 677 176 rectangle 1;
+#X text 16 93 [glsl_subtract] does compositing using texel by texel
+comparisons on two video streams. the comparison is based on user a
+user supplied RGB texel value and +/- range. if the texel in the key
+source lies within the range \, then it is replaced by the corresponding
+texel im the other stream. typically this is most effective on a static
+background like a green/blue screen.;
+#X obj 8 216 cnv 15 430 40 empty empty empty 20 12 0 14 -195568 -66577
+0;
+#X obj 8 266 cnv 15 430 200 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#X text 32 267 Inlets:;
+#X text 16 215 Arguments:;
+#X text 16 281 Inlet 1: gemlist;
+#X text 16 296 Inlet 1: value <list> : list of 3 floats of the pixel-value
+to key out: values are Red/Green/Blue (in RGBA-Space).;
+#X text 16 323 Inlet 1: range <float> : range value from 'value' to
+key out.;
+#X text 16 226 a list of 4 (texunit_left texunit_right texture_size_x
+texture_size_y) float-values. Defaults: 1 2 256 256, f 55;
+#X text 16 396 Inlet 2: texture ID;
+#X text 32 434 Outlets:;
+#X text 16 447 Outlet 1: texture ID;
+#X text 16 410 Inlet 3: texture ID;
+#X obj 8 476 cnv 15 430 40 empty empty empty 20 12 0 14 -260818 -66577
+0;
+#X text 16 474 WARNING: if you get this warning in the pd console \,
+then you can't use this GLSL abstraction : warning: "extension `GL_EXT_gpu_shader4'
+unsupported in fragment shader";
+#X text 16 188 The 2 images can be of any size.;
+#X obj 514 327 glsl_chroma_key 1 2;
+#X text 16 350 Inlet 1: All messages accepted by [gemframebuffer] :
+;
+#N canvas 1 82 882 372 gemframebuffer_messages 0;
+#X obj 412 293 cnv 15 300 30 empty empty empty 20 12 0 14 -191407 -66577
+0;
+#X msg 555 106 dimen 320 240;
+#X msg 702 114 color 0 0 1 0;
+#X msg 542 87 dimen 1024 1024;
+#X msg 691 74 color 0 0 0 0;
+#X msg 449 101 type FLOAT;
+#X obj 417 298 gemframebuffer;
+#X msg 471 187 texunit \$1;
+#X msg 435 62 type BYTE;
+#X msg 443 82 type INT;
+#X msg 598 179 format YUV;
+#X msg 589 158 format RGB;
+#X msg 608 200 format RGBA;
+#X msg 620 220 format RGB32;
+#X floatatom 471 167 5 0 0 0 - - -, f 5;
+#X obj 702 93 loadbang;
+#X obj 589 245 t a;
+#X obj 525 124 t a;
+#X obj 691 135 t a;
+#X obj 435 130 t a;
+#X obj 435 154 t a;
+#X text 28 47 Inlet 1: message: type [BYTE | INT | FLOAT];
+#X text 27 115 Inlet 1: message: dimen <x> <y>;
+#X text 27 149 Inlet 1: message: color <r> <g> <b> <a>;
+#X text 26 186 Inlet 1: message: texunit <f>;
+#X text 27 80 Inlet 1: message: format [RGB|RGBA|RGB32|YUV];
+#X text 103 62 (type of the framebuffer data);
+#X text 102 130 (dimension of the framebuffer texture);
+#X text 106 221 (usefull only with shader);
+#X text 106 204 (change texunit of the texture);
+#X text 100 96 (color format of the framebuffer);
+#X text 102 165 (background color of the framebuffer);
+#X msg 525 30 perspec -1 1 -1 1 1 20;
+#X msg 533 56 perspec -1 1 -1 1 3 75;
+#X text 98 253 (frustum of the framebuffer);
+#X text 23 238 Inlet 1: message: perspec <left><right><bottom><top><near>
+;
+#X connect 1 0 17 0;
+#X connect 2 0 18 0;
+#X connect 3 0 17 0;
+#X connect 4 0 18 0;
+#X connect 5 0 19 0;
+#X connect 7 0 6 0;
+#X connect 8 0 19 0;
+#X connect 9 0 19 0;
+#X connect 10 0 16 0;
+#X connect 11 0 16 0;
+#X connect 12 0 16 0;
+#X connect 13 0 16 0;
+#X connect 14 0 7 0;
+#X connect 15 0 2 0;
+#X connect 16 0 6 0;
+#X connect 17 0 20 0;
+#X connect 18 0 20 0;
+#X connect 19 0 20 0;
+#X connect 20 0 6 0;
+#X connect 32 0 17 0;
+#X connect 33 0 17 0;
+#X restore 18 367 pd gemframebuffer_messages;
+#X connect 9 0 10 0;
+#X connect 10 0 9 0;
+#X connect 13 0 15 0;
+#X connect 14 0 13 0;
+#X connect 15 0 51 0;
+#X connect 16 0 18 0;
+#X connect 18 0 51 0;
+#X connect 19 0 51 0;
+#X connect 20 0 22 1;
+#X connect 21 0 23 1;
+#X connect 22 0 24 0;
+#X connect 23 0 25 0;
+#X connect 24 1 51 1;
+#X connect 25 1 51 2;
+#X connect 26 0 32 0;
+#X connect 27 0 22 0;
+#X connect 28 0 23 0;
+#X connect 29 0 31 0;
+#X connect 30 0 29 0;
+#X connect 32 0 24 0;
+#X connect 33 0 34 0;
+#X connect 34 0 25 0;
+#X connect 51 0 29 1;
